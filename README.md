@@ -93,6 +93,18 @@ For every request to `/articles/<int:id>`, increment the value of
 - An API endpoint at `/clear` is available to clear your session as needed. Navigate
 to http://localhost:5555/clear to reset attempts.
 - Run test suite with `pytest` to ensure all tests are passing.
+  
+#### Step 5: Commit and Push Git History
+
+* Commit and push your code:
+
+```bash
+git add .
+git commit -m "final solution"
+git push
+```
+
+* If you created a separate feature branch, remember to open a PR on main and merge.
 
 ### Task 4: Document and Maintain
 
