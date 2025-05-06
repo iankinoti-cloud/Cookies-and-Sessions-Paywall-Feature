@@ -1,31 +1,16 @@
 # Cookies and Sessions Lab
 
-## Learning Goals
-
-- Use the session object to persist data across multiple requests.
-
-***
-
-## Key Vocab
-
-- **Identity and Access Management (IAM)**: a subfield of software engineering that
-  focuses on users, their attributes, their login information, and the resources
-  that they are allowed to access.
-- **Authentication**: proving one's identity to an application in order to
-  access protected information; logging in.
-- **Authorization**: allowing or disallowing access to resources based on a
-  user's attributes.
-- **Session**: the time between a user logging in and logging out of a web
-  application.
-- **Cookie**: data from a web application that is stored by the browser. The
-  application can retrieve this data during subsequent sessions.
-
-***
-
-## Introduction
+## Scenario
 
 In this lab, you'll be building out a blog paywall feature by using the session
 hash to keep track of how many page views a user has made.
+
+## Tools & Resources
+
+- [GitHub Repo](https://github.com/learn-co-curriculum/flask-cookies-and-sessions-lab)
+- [API - Flask: class flask.session](https://flask.palletsprojects.com/en/2.2.x/api/#flask.session)
+
+## Set Up
 
 There is some starter code in place for a Flask API backend and a React
 frontend. To get set up, run:
@@ -63,31 +48,64 @@ Proxy error: Could not proxy request /articles from localhost:4000 to http://loc
 That's okay, that just means our Flask API isn't yet running, but the frontend is 
 trying to make a request.
 
-***
-
 ## Instructions
+
+### Task 1: Define the Problem
+
+Users are currently limited to seeing 3 articles on the site before hitting a 
+paywall, but the logic is only in the frontend, so many tech-savvy users are 
+getting around the paywall using browser dev tools.
+
+### Task 2: Determine the Design
 
 Our app will keep track of how many blog posts a user has viewed by using the
 `session` object. Each user can view a **maximum of three articles** before
-seeing the paywall.
+seeing the paywall. This will ensure the logic is on the backend and not as easy
+for users to get around.
 
-When a user makes a `GET` request to `/articles/<int:id>`, the following should
-happen:
+### Task 3: Develop, Test, and Refine the Code
+
+#### Step 1: Initialize the Session for Page Views
+
+When a user makes a `GET` request to `/articles/<int:id>`:
 
 - If this is the first request this user has made, set `session['page_views']` to
   an initial value of 0.
-  - **Hint**: consider using a ternary operator to set this initial value!
-- For every request to `/articles/<int:id>`, increment the value of
-  `session['page_views']` by 1.
+
+#### Step 2: Increment the Session on Each Request
+
+For every request to `/articles/<int:id>`, increment the value of 
+`session['page_views']` by 1.
+
+#### Step 3: Send Response Based on Session Data
+
 - If the user has viewed 3 or fewer pages, render a JSON response with the
   article data.
 - If the user has viewed more than 3 pages, render a JSON response including an
   error message `{'message': 'Maximum pageview limit reached'}`, and a status code
   of 401 unauthorized.
-- An API endpoint at `/clear` is available to clear your session as needed.
 
-***
+#### Step 4: Test the Endpoint
 
-## Resources
+- In browser, navigate to your React app.
+- Click on 4 articles. The first 3 should be visible. The last article should say
+"Maximum articles viewed"
+- An API endpoint at `/clear` is available to clear your session as needed. Navigate
+to http://localhost:5555/clear to reset attempts.
+- Run test suite with `pytest` to ensure all tests are passing.
 
-- [API - Flask: class flask.session](https://flask.palletsprojects.com/en/2.2.x/api/#flask.session)
+### Task 4: Document and Maintain
+
+Best Practice documentation steps:
+* Add comments to the code to explain purpose and logic, clarifying intent and functionality of your code to other developers.
+* Update README text to reflect the functionality of the application following https://makeareadme.com. 
+  * Add screenshot of completed work included in Markdown in README.
+* Delete any stale branches on GitHub
+* Remove unnecessary/commented out code
+* If needed, update git ignore to remove sensitive data
+
+## Submit your solution
+
+CodeGrade will use the same test suite as the test suite included.
+
+Once all tests are passing, commit and push your work using `git` to submit to CodeGrade through Canvas.

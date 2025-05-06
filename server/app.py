@@ -22,7 +22,8 @@ def clear_session():
 
 @app.route('/articles')
 def index_articles():
-    pass
+    articles = [ArticleSchema().dump(a) for a in Article.query.all()]
+    return make_response(articles)
 
 @app.route('/articles/<int:id>')
 def show_article(id):
