@@ -3,7 +3,7 @@
 from flask import Flask, make_response, jsonify, session
 from flask_migrate import Migrate
 
-from models import db, Article, User
+from models import db, Article, User, ArticleSchema, UserSchema
 
 app = Flask(__name__)
 app.secret_key = b'Y\xf1Xz\x00\xad|eQ\x80t \xca\x1a\x10K'
@@ -22,13 +22,12 @@ def clear_session():
 
 @app.route('/articles')
 def index_articles():
-
     pass
 
 @app.route('/articles/<int:id>')
 def show_article(id):
-
     pass
+
 
 if __name__ == '__main__':
     app.run(port=5555)
