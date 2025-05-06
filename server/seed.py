@@ -35,6 +35,8 @@ with app.app_context():
             minutes_to_read=randint(1,20),
         )
 
+        article.user = users[i // 4]
+
         articles.append(article)
 
     db.session.add_all(articles)
