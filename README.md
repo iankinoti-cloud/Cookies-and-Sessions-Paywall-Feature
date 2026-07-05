@@ -1,19 +1,39 @@
-# Cookies and Sessions Lab
+# Lorem Blogum — Blog Paywall with Flask Sessions
 
-## Scenario
+A full-stack blog application with a backend-enforced paywall. Readers can view
+**three free articles**; every article view is counted server-side in the Flask
+`session`, and once the limit is reached the API responds with a
+`401 Unauthorized` and the React frontend displays a paywall.
 
-In this lab, you'll be building out a blog paywall feature by using the session
-hash to keep track of how many page views a user has made.
+## Description
 
-## Tools & Resources
+The paywall limit was previously enforced only in the frontend, which meant
+tech-savvy readers could bypass it with browser dev tools. This application
+moves that logic to the backend:
 
-- [GitHub Repo](https://github.com/learn-co-curriculum/flask-cookies-and-sessions-lab)
-- [API - Flask: class flask.session](https://flask.palletsprojects.com/en/2.2.x/api/#flask.session)
+- Every `GET /articles/<id>` request increments `session['page_views']`.
+- The session cookie is cryptographically signed by Flask, so the counter
+  can't be tampered with from the browser.
+- Views 1–3 return the article JSON; from the 4th view onward the API returns
+  `401` with `{"message": "Maximum pageview limit reached"}` and the frontend
+  renders the paywall instead of the article.
 
-## Set Up
+**Tech stack:** Flask, Flask-SQLAlchemy, Flask-Migrate, Marshmallow, SQLite,
+React (Create React App), React Router.
 
-There is some starter code in place for a Flask API backend and a React
-frontend. To get set up, run:
+## Visuals
+
+Reading an article (views 1–3):
+
+![Article view showing a blog post with title, author, and content](screenshots/article.png)
+
+The paywall after the third article (view 4+):
+
+![Paywall screen showing "Maximum articles viewed" message](screenshots/paywall.png)
+
+## Installation
+
+Requires Python 3.8+, pipenv, and Node.js.
 
 ```bash
 pipenv install && pipenv shell
@@ -23,101 +43,44 @@ flask db upgrade
 python seed.py
 ```
 
-You can work on this lab by running the tests with `pytest -x`. It will also be
-helpful to see what's happening during the request/response cycle by running the
-app in the browser. You can run the Flask server with:
+## Usage
+
+Run the Flask API (from the `server/` directory):
 
 ```bash
 python app.py
 ```
 
-Open a second terminal which will be responsible for running the React app:
+In a second terminal, run the React app:
 
 ```bash
 npm start --prefix client
 ```
 
-You don't have to make any changes to the React code to get this lab working.
+Then open [http://localhost:4000](http://localhost:4000), click into articles,
+and after three article views the paywall appears.
 
-If you aren't currently running the Flask app, you may see:
+### API Endpoints
 
-```bash
-Proxy error: Could not proxy request /articles from localhost:4000 to http://localhost:5555.
-```
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `/articles` | List all articles. |
+| GET | `/articles/<id>` | Show one article and count the view. Returns `401` with `{"message": "Maximum pageview limit reached"}` after 3 views. |
+| GET | `/clear` | Reset the session's view counter (handy while testing). |
 
-That's okay, that just means our Flask API isn't yet running, but the frontend is 
-trying to make a request.
-
-## Instructions
-
-### Task 1: Define the Problem
-
-Users are currently limited to seeing 3 articles on the site before hitting a 
-paywall, but the logic is only in the frontend, so many tech-savvy users are 
-getting around the paywall using browser dev tools.
-
-### Task 2: Determine the Design
-
-Our app will keep track of how many blog posts a user has viewed by using the
-`session` object. Each user can view a **maximum of three articles** before
-seeing the paywall. This will ensure the logic is on the backend and not as easy
-for users to get around.
-
-### Task 3: Develop, Test, and Refine the Code
-
-#### Step 1: Initialize the Session for Page Views
-
-When a user makes a `GET` request to `/articles/<int:id>`:
-
-- If this is the first request this user has made, set `session['page_views']` to
-  an initial value of 0.
-
-#### Step 2: Increment the Session on Each Request
-
-For every request to `/articles/<int:id>`, increment the value of 
-`session['page_views']` by 1.
-
-#### Step 3: Send Response Based on Session Data
-
-- If the user has viewed 3 or fewer pages, render a JSON response with the
-  article data.
-- If the user has viewed more than 3 pages, render a JSON response including an
-  error message `{'message': 'Maximum pageview limit reached'}`, and a status code
-  of 401 unauthorized.
-
-#### Step 4: Test the Endpoint
-
-- In browser, navigate to your React app.
-- Click on 4 articles. The first 3 should be visible. The last article should say
-"Maximum articles viewed"
-- An API endpoint at `/clear` is available to clear your session as needed. Navigate
-to http://localhost:5555/clear to reset attempts.
-- Run test suite with `pytest` to ensure all tests are passing.
-  
-#### Step 5: Commit and Push Git History
-
-* Commit and push your code:
+### Running the tests
 
 ```bash
-git add .
-git commit -m "final solution"
-git push
+pytest
 ```
 
-* If you created a separate feature branch, remember to open a PR on main and merge.
+The suite verifies the article show route, the session counter incrementing on
+every view, and the `401` paywall response after three views.
 
-### Task 4: Document and Maintain
+## Contributing
 
-Best Practice documentation steps:
-* Add comments to the code to explain purpose and logic, clarifying intent and functionality of your code to other developers.
-* Update README text to reflect the functionality of the application following https://makeareadme.com. 
-  * Add screenshot of completed work included in Markdown in README.
-* Delete any stale branches on GitHub
-* Remove unnecessary/commented out code
-* If needed, update git ignore to remove sensitive data
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Submit your solution
+## License
 
-CodeGrade will use the same test suite as the test suite included.
-
-Once all tests are passing, commit and push your work using `git` to submit to CodeGrade through Canvas.
+See [LICENSE.md](LICENSE.md).

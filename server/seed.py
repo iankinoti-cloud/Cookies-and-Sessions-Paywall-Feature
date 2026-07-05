@@ -15,8 +15,6 @@ with app.app_context():
     Article.query.delete()
     User.query.delete()
 
-    fake = Faker()
-
     print("Creating users...")
     users = [User(name=fake.name()) for i in range(25)]
     db.session.add_all(users)

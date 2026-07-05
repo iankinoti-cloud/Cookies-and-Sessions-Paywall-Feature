@@ -59,6 +59,10 @@ jspm_packages
 .pytest_cache
 __pycache__
 
+# Environment variables and other secrets
+.env
+.env.*
+
 # database
 *.db
 instance
